@@ -1,0 +1,53 @@
+---
+title: "ECHO Discontinuation Descriptives"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+library(gmodels)
+library(knitr)
+opts_chunk$set(results = 'asis',      # This is essential (can also be set at the chunk-level)
+                comment = NA, 
+                prompt = FALSE, 
+                cache = FALSE)
+
+library(summarytools)
+st_options(plain.ascii = FALSE,       # This is very handy in all Rmd documents
+            style = "rmarkdown",      # This too
+            footnote = NA,            # Avoids footnotes which would clutter the results
+            subtitle.emphasis = FALSE # This is a setting to experiment with - according to
+ )                                    # the theme used, it might improve the headings' 
+                                      # layout
+
+
+st_css()                              # This is a must; without it, expect odd layout,
+                                      # especially with dfSummary()
+
+setwd("H:/ECHO/Discontinuation")
+a <- readRDS("echodiscont.rds")
+```
+
+###descriptives (numeric variables)
+```{r, echo=FALSE}
+descr(a[c("age", "children", "preg")], stats = "common", transpose = TRUE, headings = FALSE)
+```
+
+###descriptives (categorical variables)
+```{r, echo=FALSE}
+freq(a[ ,c("q3_random_method", "method_wanted", "method_unwanted", "q4_current_method", "q5_continue_method", "q6_recommend_method", "q2_change_mthd_v2", "mo6method", "q3_impl_remov_loc_v2", "random_eq_exit", "random_eq_6mo", "exit_eq_6mo")])
+```
+
+###method randomized to vs method at exit
+```{r, echo=FALSE}
+ctable(a$q3_random_method, a$q4_current_method, prop = "n")
+```
+
+###method randomized to vs method at 6mo follow-up
+```{r, echo=FALSE}
+ctable(a$q3_random_method, a$mo6method, prop = "n")
+```
+
+###method at exit vs method at 6mo follow-up
+```{r, echo=FALSE}
+ctable(a$q4_current_method, a$mo6method, prop = "n")
+```
